@@ -1,0 +1,50 @@
+1. downloaded MythBuster explosion video using yt-dlp
+2. used "ffmpeg -i input.mp4 -ss 00:01:00 -to 00:02:30 -c copy output_clip.mp4" to trim video 30s
+3. edited myth_explosion.csv annotation: watch clip & differentiate explanation & explosion
+4. edited window.py  to use dtype to return a sequence
+5. updated precompute_window to set result = make_windows() and if statement in case window returns empty
+
+EXECUTING STEPS:
+
+
+1. pyenv install 3.12.11 - for compatible Pytorch & torchvision
+
+2. create a conda environment with python 3.12 INSIDE folder:
+``` conda create -p ./env python=3.12 -y
+    conda activate ./env ```
+
+3. confirm correct python 3.12
+``` which python
+  python --version
+
+
+3. install all packages inside this 3.12 enviroment:
+    ``` python -m pip install --upgrade pip
+    python -m pip install -r requirements.txt   
+    pip install torch==2.8.0 torchvision==0.23.0 torchaudio==2.8.0 --index-url https://download.pytorch.org/whl/cpu
+  
+
+Execute
+  python src/precompute_windows.py \
+  --videos "myth_explosion_SHORT.mp4" \
+  --ann_dir data/sample_annotations \
+  --out_file data/dataset_windows.pt \
+  --fps 4 --win_sec 2.0 --stride_sec 0.5 \
+
+edit train.py to accept 3 channels instead of 9 channels
+  ```vids = vids.view(vids.shape[0], 3, 3, vids.shape[2], vids.shape[3]).mean(dim=2)```
+   ```if mels.ndim == 3:
+            mels = mels.unsqueeze(1)``` to match input shape [B, 1, M, T]
+
+
+train baseline model & save result to best.pt using
+``` python src/train.py --dataset_pt data/dataset_windows.pt --epochs 5 --batch_size 32 --lr 2e-4 ```
+
+
+FINAL TESTING: 
+1. Python test run before streamlit
+cd src
+python app.py
+
+2. streamlit
+streamlit run src/app.py

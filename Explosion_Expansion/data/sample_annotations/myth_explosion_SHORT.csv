@@ -1,0 +1,7 @@
+video_id,start_sec,end_sec,event_type
+myth_explosion_clip,0.0,9.0,explanation
+myth_explosion_clip,10.0,13.0,explosion
+myth_explosion_clip,13.0,15.0,explanation
+myth_explosion_clip,16.0,18.0,explosion
+myth_explosion_clip,19.0,19.5,explanation
+myth_explosion_clip,20.0,30.0,explosion
